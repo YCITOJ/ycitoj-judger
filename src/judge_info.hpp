@@ -7,12 +7,12 @@ namespace htto_judger
     // judge result Tag
     enum ResultTag
     {
-        AC,
-        WA,
-        RE,
+        NORMAL,
         TLE,
         MLE,
+        RE,
         UKE,
+        CE,
     };
     struct JudgeInfo
     {
@@ -36,8 +36,8 @@ namespace htto_judger
     };
     /*
         parameter order 
-        1. memory_limit
-        2. time_limit
+        1. memory_limit  
+        2. time_limit  
         3. lang
         4. input_path
         5. output_path

@@ -52,8 +52,7 @@ namespace htto_judger
             exit(1);
         }
         dup2(fileno(input), fileno(stdin));
-        std::string output_path = info.gen_path + info.submission_id + ".txt";
-        FILE *output = fopen(output_path.c_str(), "w");
+        FILE *output = fopen(info.output_path.c_str(), "w");
         if (!output)
         {
             cerr << "write output file faield";
@@ -65,14 +64,15 @@ namespace htto_judger
     {
         // issue : Mac OS ARM can not restrict memory usage.
         rlimit lim;
-        lim.rlim_cur = lim.rlim_max=5*1024;
+        lim.rlim_cur = lim.rlim_max=info.memory_limit*1024*1500;
         // limit memory
         if (setrlimit(RLIMIT_AS, &lim) != 0)
         {
             cerr << "limit memory failed\n";
             exit(1);
         }
-        lim.rlim_cur=lim.rlim_max=5;
+        // limit time
+        lim.rlim_cur=lim.rlim_max=info.time_limit/1000 + 1;
         if(setrlimit(RLIMIT_CPU,&lim)!=0)
         {
             cerr<<"limit cpu falied";
@@ -88,7 +88,7 @@ namespace htto_judger
         set_limit(info);
         
         execve(exe_path.c_str(), NULL, NULL);
-        cerr << "compiler error";
-        exit(0);
+        cerr << "compiler error\n";
+        exit(ResultTag::CE);
     }
 }
