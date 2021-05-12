@@ -56,8 +56,12 @@ namespace htto_judger
 
 
 int main(int argc, char **argv)
-{
-    // ./a.out 10 10 cpp ../test/1.in ../test/1.out ../test/main.cpp 111 ../test/
+{   
+    // cpp 
+    // ./a.out 10 1000 cpp ../test/1.in ../test/1.out ../test/main.cpp 111 ../test/
+    // merdog
+    // ./a.out 10 1000 merdog ../test/1.in ../test/1.out ../test/main.mer 111 ../test/
+    // python: ./a.out 10 1000 python ../test/1.in ../test/1.out ../test/main.py 111 ../test/
     auto info=htto_judger::get_judge_info(argc, argv);
 
     pid_t child_pid=fork();

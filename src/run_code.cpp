@@ -26,20 +26,20 @@ namespace htto_judger
         {"cpp", "g++ ? -o ? -std=c++17 "},
     };
     map<std::string, std::string> interpretor_arg{
-        {"merdog", "merdog ?"}};
+        {"merdog", "./merdog"},
+        {"python","python"},
+        {"node","node"},
+    };
     string compile(const string &compiler, const JudgeInfo &judge_info)
     {
-        if (compiler_arg.count(compiler))
+        if (compiler == "cpp")
         {
-            if (compiler == "cpp")
-            {
-                string ret = judge_info.gen_path + judge_info.submission_id;
+            string ret = judge_info.gen_path + judge_info.submission_id;
 
-                string ins = replace_string(compiler_arg[compiler], {judge_info.source_path, ret});
-                cout <<"Ins:"<< ins << endl;
-                system(ins.c_str());
-                return ret;
-            }
+            string ins = replace_string(compiler_arg[compiler], {judge_info.source_path, ret});
+            cout <<"Ins:"<< ins << endl;
+            system(ins.c_str());
+            return ret;
         }
         return "";
     }
@@ -82,13 +82,31 @@ namespace htto_judger
 
     void children_run(const JudgeInfo &info)
     {
-        string exe_path = compile(info.lang, info);
+        
         //const char *envp[] = {"PATH=/bin", 0};
         redirect(info);
         set_limit(info);
-        
-        execve(exe_path.c_str(), NULL, NULL);
-        cerr << "compiler error\n";
+        if(compiler_arg.count(info.lang))
+        {
+            string exe_path = compile(info.lang, info);
+            execve(exe_path.c_str(), NULL, NULL);
+            cerr << "compiler error\n";
+        }
+        else if(interpretor_arg.count(info.lang)){
+            string interpretor=interpretor_arg[info.lang];
+            char * argv[]={
+                "TMP",
+                "../test/main.mer"
+            };
+            //char *envp[] = {"PATH=/bin", 0};
+
+            execve("./merdog",argv,NULL);
+            cerr<<"interpreter error\n";
+        }
+        else 
+        {
+            cerr<<"invalid compiler or interpreter";
+        }
         exit(ResultTag::CE);
     }
 }
