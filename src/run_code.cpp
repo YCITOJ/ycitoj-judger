@@ -63,13 +63,19 @@ namespace htto_judger
     }
     void set_limit(const JudgeInfo &info)
     {
+        // issue : Mac OS ARM can not restrict memory usage.
         rlimit lim;
-        lim.rlim_cur = info.memory_limit * 1024 * 1024;
-        lim.rlim_max = lim.rlim_cur;
+        lim.rlim_cur = lim.rlim_max=5*1024;
         // limit memory
         if (setrlimit(RLIMIT_AS, &lim) != 0)
         {
             cerr << "limit memory failed\n";
+            exit(1);
+        }
+        lim.rlim_cur=lim.rlim_max=5;
+        if(setrlimit(RLIMIT_CPU,&lim)!=0)
+        {
+            cerr<<"limit cpu falied";
             exit(1);
         }
     }
@@ -77,10 +83,11 @@ namespace htto_judger
     void children_run(const JudgeInfo &info)
     {
         string exe_path = compile(info.lang, info);
-        char *envp[] = {"PATH=/bin", 0};
-        set_limit(info);
+        //const char *envp[] = {"PATH=/bin", 0};
         redirect(info);
-        execve(exe_path.c_str(), NULL, envp);
+        set_limit(info);
+        
+        execve(exe_path.c_str(), NULL, NULL);
         cerr << "compiler error";
         exit(0);
     }

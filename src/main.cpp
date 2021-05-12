@@ -12,7 +12,7 @@ namespace htto_judger
 }
 int main(int argc, char **argv)
 {
-    // ./a.out 1024 1000 cpp ../test/1.in ../test/1.out ../test/b.cpp 111 ../test/
+    // ./a.out 10 10 cpp ../test/1.in ../test/1.out ../test/b.cpp 111 ../test/
     auto info=htto_judger::get_judge_info(argc, argv);
 
     pid_t child_pid=fork();
@@ -29,6 +29,11 @@ int main(int argc, char **argv)
     // parent process
     else {
         cout<<"create parent process\n";
+        rusage cost;
+        int stat;
+        wait4(child_pid,&stat,WSTOPPED,&cost);
+        printf("memory usgae:%d Bytes\n",cost.ru_maxrss);
+        printf("cpu usage:%d s\n",(int)cost.ru_utime.tv_sec);
     }
     return 0;
 }
