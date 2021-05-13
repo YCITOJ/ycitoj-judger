@@ -1,0 +1,5 @@
+program main{
+    int a=std.read_int();
+    int b=std.read_int();
+    std.cout(a+b);
+}

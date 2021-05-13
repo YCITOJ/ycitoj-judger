@@ -53,15 +53,16 @@ namespace htto_judger
     }
 } 
 
-
+/*
+crate test/xxx and test/1.in 
+cpp: ./a.out 10 1000 cpp ../test/1.in ../test/1.out ../test/main.cpp 111 ../test/
+merdog: ./a.out 10 1000 merdog ../test/1.in ../test/1.out ../test/main.mer 111 ../test/
+python: ./a.out 10 1000 python ../test/1.in ../test/1.out ../test/main.py 111 ../test/
+JS: ./a.out 10 1000 node ../test/1.in ../test/1.out ../test/main.js 111 ../test/
+*/
 
 int main(int argc, char **argv)
 {   
-    // cpp 
-    // ./a.out 10 1000 cpp ../test/1.in ../test/1.out ../test/main.cpp 111 ../test/
-    // merdog
-    // ./a.out 10 1000 merdog ../test/1.in ../test/1.out ../test/main.mer 111 ../test/
-    // python: ./a.out 10 1000 python ../test/1.in ../test/1.out ../test/main.py 111 ../test/
     auto info=htto_judger::get_judge_info(argc, argv);
 
     pid_t child_pid=fork();

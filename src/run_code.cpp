@@ -26,18 +26,16 @@ namespace htto_judger
         {"cpp", "g++ ? -o ? -std=c++17 "},
     };
     map<std::string, std::string> interpretor_arg{
-        {"merdog", "./merdog"},
-        {"python","python"},
-        {"node","node"},
+        {"merdog", "/usr/bin/merdog"},
+        {"python","/usr/bin/python3"},
+        {"node","/usr/bin/node"},
     };
     string compile(const string &compiler, const JudgeInfo &judge_info)
     {
         if (compiler == "cpp")
         {
             string ret = judge_info.gen_path + judge_info.submission_id;
-
             string ins = replace_string(compiler_arg[compiler], {judge_info.source_path, ret});
-            cout <<"Ins:"<< ins << endl;
             system(ins.c_str());
             return ret;
         }
@@ -62,7 +60,7 @@ namespace htto_judger
     }
     void set_limit(const JudgeInfo &info)
     {
-        // issue : Mac OS ARM can not restrict memory usage.
+        // issue : macOS ARM || WSL1 can not restrict memory usage.
         rlimit lim;
         lim.rlim_cur = lim.rlim_max=info.memory_limit*1024*1500;
         // limit memory
@@ -82,8 +80,6 @@ namespace htto_judger
 
     void children_run(const JudgeInfo &info)
     {
-        
-        //const char *envp[] = {"PATH=/bin", 0};
         redirect(info);
         set_limit(info);
         if(compiler_arg.count(info.lang))
@@ -95,12 +91,11 @@ namespace htto_judger
         else if(interpretor_arg.count(info.lang)){
             string interpretor=interpretor_arg[info.lang];
             char * argv[]={
-                "TMP",
-                "../test/main.mer"
+                "interpreter",
+                (char*)info.source_path.c_str(),
+                NULL
             };
-            //char *envp[] = {"PATH=/bin", 0};
-
-            execve("./merdog",argv,NULL);
+            execve(interpretor.c_str(),argv,NULL);
             cerr<<"interpreter error\n";
         }
         else 
