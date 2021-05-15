@@ -36,7 +36,7 @@ namespace htto_judger
         // one is program name
         if (pcnt != 9)
         {
-            printf("Param Error need 9 bug get %d ",pcnt);
+            printf("Param Error: require 9 arguments but got %d\n",pcnt);
             return ret;
         }
         ret.memory_limit = parse_int(std::string(param[1]));

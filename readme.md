@@ -1,5 +1,5 @@
 ### ycit-judger
-1. compile: clang++ ./src/clang++ *.cpp -lpthread -o judger
+1. compile:cd ./src && clang++ *.cpp -lpthread -o judger
 2. run: judger memory_limit time_limit  lang input_path output_path source_path submisson gen_path
 
 | param name   | type   | remark                                         |
@@ -15,7 +15,7 @@
 
 here are some examples
 ```bash
-crate test/xxx and test/1.in 
+create test/xxx and test/1.in 
 cpp: ./a.out 10 1000 cpp ../test/1.in ../test/1.out ../test/main.cpp 111 ../test/
 merdog: ./a.out 10 1000 merdog ../test/1.in ../test/1.out ../test/main.mer 111 ../test/
 python: ./a.out 10 1000 python ../test/1.in ../test/1.out ../test/main.py 111 ../test/

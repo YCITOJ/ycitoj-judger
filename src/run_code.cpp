@@ -27,14 +27,20 @@ namespace htto_judger
     };
     map<std::string, std::string> interpretor_arg{
         {"merdog", "/usr/bin/merdog"},
-        {"python","/usr/bin/python3"},
-        {"node","/usr/bin/node"},
+        {"python", "/usr/bin/python3"},
+        {"node", "/usr/bin/node"},
     };
     string compile(const string &compiler, const JudgeInfo &judge_info)
     {
         if (compiler == "cpp")
         {
             string ret = judge_info.gen_path + judge_info.submission_id;
+            // if executable file exists, delete it.
+            if (access(ret.c_str(), F_OK) == 0)
+            {
+                if(unlink(ret.c_str()))
+                    cerr<<"delete old executable file "+ ret+" failed.\n";
+            }
             string ins = replace_string(compiler_arg[compiler], {judge_info.source_path, ret});
             system(ins.c_str());
             return ret;
@@ -62,7 +68,7 @@ namespace htto_judger
     {
         // issue : macOS ARM || WSL1 can not restrict memory usage.
         rlimit lim;
-        lim.rlim_cur = lim.rlim_max=info.memory_limit*1024*1500;
+        lim.rlim_cur = lim.rlim_max = info.memory_limit * 1024 * 1500;
         // limit memory
         if (setrlimit(RLIMIT_AS, &lim) != 0)
         {
@@ -70,10 +76,10 @@ namespace htto_judger
             exit(1);
         }
         // limit time
-        lim.rlim_cur=lim.rlim_max=info.time_limit/1000 + 1;
-        if(setrlimit(RLIMIT_CPU,&lim)!=0)
+        lim.rlim_cur = lim.rlim_max = info.time_limit / 1000 + 1;
+        if (setrlimit(RLIMIT_CPU, &lim) != 0)
         {
-            cerr<<"limit cpu falied";
+            cerr << "limit cpu falied";
             exit(1);
         }
     }
@@ -82,26 +88,27 @@ namespace htto_judger
     {
         redirect(info);
         set_limit(info);
-        if(compiler_arg.count(info.lang))
+        if (compiler_arg.count(info.lang))
         {
-            string exe_path = compile(info.lang, info);
+            string exe_path = info.gen_path + info.submission_id;
             execve(exe_path.c_str(), NULL, NULL);
             cerr << "compiler error\n";
         }
-        else if(interpretor_arg.count(info.lang)){
-            string interpretor=interpretor_arg[info.lang];
-            char * argv[]={
-                "interpreter",
-                (char*)info.source_path.c_str(),
-                NULL
-            };
-            execve(interpretor.c_str(),argv,NULL);
-            cerr<<"interpreter error\n";
-        }
-        else 
+        else if (interpretor_arg.count(info.lang))
         {
-            cerr<<"invalid compiler or interpreter";
+            string interpretor = interpretor_arg[info.lang];
+            char *argv[] = {
+                "interpreter",
+                (char *)info.source_path.c_str(),
+                NULL};
+            execve(interpretor.c_str(), argv, NULL);
+            cerr << "interpreter error\n";
+        }
+        else
+        {
+            cerr << "invalid compiler or interpreter";
         }
         exit(ResultTag::CE);
     }
+
 }

@@ -64,7 +64,7 @@ JS: ./a.out 10 1000 node ../test/1.in ../test/1.out ../test/main.js 111 ../test/
 int main(int argc, char **argv)
 {   
     auto info=htto_judger::get_judge_info(argc, argv);
-
+    htto_judger::compile(info.lang,info);
     pid_t child_pid=fork();
     if(child_pid<0)
     {
