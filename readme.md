@@ -1,5 +1,5 @@
 ### ycit-judger
-1. compile:cd ./src && clang++ *.cpp -lpthread -o judger
+1. compile: `cd ./src && clang++ *.cpp -lpthread -o judger`
 2. run: judger memory_limit time_limit  lang input_path output_path source_path submisson gen_path
 
 | param name   | type   | remark                                         |
