@@ -68,19 +68,19 @@ namespace htto_judger
     {
         // issue : macOS ARM || WSL1 can not restrict memory usage.
         rlimit lim;
-        lim.rlim_cur = lim.rlim_max = info.memory_limit * 1024 * 1500;
+        lim.rlim_cur = lim.rlim_max = info.memory_limit * 1024 * 2048;
         // limit memory
         if (setrlimit(RLIMIT_AS, &lim) != 0)
         {
             cerr << "limit memory failed\n";
-            exit(1);
+            exit(-1);
         }
         // limit time
         lim.rlim_cur = lim.rlim_max = info.time_limit / 1000 + 1;
         if (setrlimit(RLIMIT_CPU, &lim) != 0)
         {
             cerr << "limit cpu falied";
-            exit(1);
+            exit(-1);
         }
     }
 
