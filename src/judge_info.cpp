@@ -34,7 +34,7 @@ namespace htto_judger
         JudgeInfo ret;
         ret.memory_limit=-1;
         // one is program name
-        if (pcnt != 9)
+        if (pcnt < 9)
         {
             printf("Param Error: require 9 arguments but got %d\n",pcnt);
             return ret;
