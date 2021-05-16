@@ -1,5 +1,5 @@
 ### ycit-judger
-1. compile: `cd ./src && clang++ *.cpp -lpthread -o judger`
+1. compile: `cd ./src && clang++ *.cpp -lpthread -o judger -std=c++17`
 2. run: judger memory_limit time_limit  lang input_path output_path source_path submisson gen_path
 
 | param name   | type   | remark                                         |
@@ -16,10 +16,10 @@
 here are some examples
 ```bash
 create test/xxx and test/1.in 
-cpp: ./a.out 10 1000 cpp ../test/1.in ../test/1.out ../test/main.cpp 111 ../test/
-merdog: ./a.out 10 1000 merdog ../test/1.in ../test/1.out ../test/main.mer 111 ../test/
-python: ./a.out 10 1000 python ../test/1.in ../test/1.out ../test/main.py 111 ../test/
-JS: ./a.out 10 1000 node ../test/1.in ../test/1.out ../test/main.js 111 ../test/
+cpp: ./judger 10 1000 cpp ../test/1.in ../test/1.out ../test/main.cpp 111 ../test/
+merdog: ./judger 10 1000 merdog ../test/1.in ../test/1.out ../test/main.mer 111 ../test/
+python: ./judger 10 1000 python ../test/1.in ../test/1.out ../test/main.py 111 ../test/
+JS: ./judger 10 1000 node ../test/1.in ../test/1.out ../test/main.js 111 ../test/
 ```
 3. return state:
 
