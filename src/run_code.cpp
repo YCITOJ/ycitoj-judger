@@ -35,11 +35,10 @@ namespace htto_judger
         if (compiler == "cpp")
         {
             string ret = judge_info.gen_path + judge_info.submission_id;
-            // if executable file exists, delete it.
+            // if executable file exists, return it.
             if (access(ret.c_str(), F_OK) == 0)
             {
-                if(unlink(ret.c_str()))
-                    cerr<<"delete old executable file "+ ret+" failed.\n";
+                return ret;
             }
             string ins = replace_string(compiler_arg[compiler], {judge_info.source_path, ret});
             system(ins.c_str());

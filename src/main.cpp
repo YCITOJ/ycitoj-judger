@@ -78,7 +78,7 @@ int main(int argc, char **argv)
     }
     // parent process
     else {
-        cout<<"create parent process\n";
+        // cout<<"create parent process\n";
         pthread_t moniter_thread;
         htto_judger::__KillerParam param;
         param.child_id=child_pid;
@@ -93,11 +93,11 @@ int main(int argc, char **argv)
         pthread_cancel(moniter_thread);
         int usage_time=cost.ru_utime.tv_sec*1000 + cost.ru_utime.tv_usec/1000;
 
-        printf("memory usgae:%d Bytes\n",cost.ru_maxrss);
-        printf("cpu usage:%d ms\n",usage_time);
-        printf("children stat:%d\n",stat);
+        // printf("memory usgae:%d Bytes\n",cost.ru_maxrss);
+        // printf("cpu usage:%d ms\n",usage_time);
+        // printf("children stat:%d\n",stat);
         int type=htto_judger::get_state(stat,cost,info);
-        printf("Type:%d\n",htto_judger::get_state(stat,cost,info));
+        // printf("Type:%d\n",htto_judger::get_state(stat,cost,info));
         exit(type);
     }
     return 0;
