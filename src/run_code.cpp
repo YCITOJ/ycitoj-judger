@@ -24,6 +24,7 @@ namespace htto_judger
 
     map<std::string, std::string> compiler_arg{
         {"cpp", "g++ ? -o ? -std=c++17 "},
+        {"rust", "rustc ? -o ? "},
     };
     map<std::string, std::string> interpretor_arg{
         {"merdog", "/usr/bin/merdog"},
@@ -32,7 +33,7 @@ namespace htto_judger
     };
     string compile(const string &compiler, const JudgeInfo &judge_info)
     {
-        if (compiler == "cpp")
+        if (compiler == "cpp" || compiler == "rust")
         {
             string ret = judge_info.gen_path + judge_info.submission_id;
             // if executable file exists, return it.
@@ -97,7 +98,7 @@ namespace htto_judger
         {
             string interpretor = interpretor_arg[info.lang];
             char *argv[] = {
-                "interpreter",
+                (char *)"interpreter",
                 (char *)info.source_path.c_str(),
                 NULL};
             execve(interpretor.c_str(), argv, NULL);
