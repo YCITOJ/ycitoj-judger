@@ -23,6 +23,16 @@ JS: ./judger 10 1000 node ../test/1.in ../test/1.out ../test/main.js 111 ../test
 ```
 3. return state:
 
+write JudgeData to a named pipe
+Write content: 
+```cpp
+struct JudgerData{
+    int usage_time;
+    int usage_mem;
+};
+```
+pipe_name: `"/tmp/pipe"+info.submission_id`
+
 | return value | remark       |
 | ------------ | ------------ |
 | -1           | judger_error |

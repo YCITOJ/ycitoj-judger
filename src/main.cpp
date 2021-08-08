@@ -1,4 +1,7 @@
 #include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <string>
 #include <pthread.h>
@@ -6,6 +9,7 @@
 #include <sys/wait.h>
 #include <getopt.h>
 #include <sys/resource.h>
+
 #include "judge_info.hpp"
 using namespace std;
 
@@ -60,6 +64,40 @@ merdog: ./a.out 10 1000 merdog ../test/1.in ../test/1.out ../test/main.mer 111 .
 python: ./a.out 10 1000 python ../test/1.in ../test/1.out ../test/main.py 111 ../test/
 JS: ./a.out 10 1000 node ../test/1.in ../test/1.out ../test/main.js 111 ../test/
 */
+struct JudgerData{
+    int usage_time;
+    int usage_mem;
+};
+
+void write_judger_data_to_pipe(const std::string &pipe_name,JudgerData judger_data)
+{
+    const int open_mod = O_WRONLY;
+
+    if (access(pipe_name.c_str(), F_OK) == -1)
+    {
+        int res = mkfifo(pipe_name.c_str(), 0777);
+
+        if (res != 0)
+        {
+            std::cout << "Open pipe failed";
+            exit(htto_judger::UKE);
+        }
+    }
+
+    int pipe_fd = open(pipe_name.c_str(), open_mod);
+
+    if (pipe_fd != -1)
+    {
+        int res = write(pipe_fd, &judger_data, sizeof(judger_data));
+        if (res == -1)
+        {
+            close(pipe_fd);
+            std::cout << "Write failed.";
+            exit(htto_judger::UKE);
+        }
+    }
+    close(pipe_fd);
+}
 
 int main(int argc, char **argv)
 {   
@@ -78,7 +116,6 @@ int main(int argc, char **argv)
     }
     // parent process
     else {
-        // cout<<"create parent process\n";
         pthread_t moniter_thread;
         htto_judger::__KillerParam param;
         param.child_id=child_pid;
@@ -93,11 +130,11 @@ int main(int argc, char **argv)
         pthread_cancel(moniter_thread);
         int usage_time=cost.ru_utime.tv_sec*1000 + cost.ru_utime.tv_usec/1000;
 
-        // printf("memory usgae:%d Bytes\n",cost.ru_maxrss);
-        // printf("cpu usage:%d ms\n",usage_time);
-        // printf("children stat:%d\n",stat);
+        
+        JudgerData judger_res={usage_time,cost.ru_maxrss};
+        write_judger_data_to_pipe("/tmp/pipe"+info.submission_id,judger_res);
+
         int type=htto_judger::get_state(stat,cost,info);
-        // printf("Type:%d\n",htto_judger::get_state(stat,cost,info));
         exit(type);
     }
     return 0;
