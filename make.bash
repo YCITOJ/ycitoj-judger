@@ -1,2 +1,2 @@
 mkdir build
-g++ ./src/*.cpp -o ./build/judger -lpthread
+g++ ./src/*.cpp -o ./build/judger -lpthread -std=c++17

@@ -51,7 +51,7 @@ namespace htto_judger
     void *killer(void *param)
     {
         __KillerParam kp = *(__KillerParam *)param;
-        int sleep_time = kp.info->time_limit / 1000 + 2;
+        int sleep_time = 2 * (kp.info->time_limit / 1000) + 1;
         sleep(sleep_time);
         kill(kp.child_id, SIGKILL);
         printf("killed by killer\n");
