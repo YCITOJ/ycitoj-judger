@@ -23,8 +23,8 @@ namespace htto_judger
     }
 
     map<std::string, std::string> compiler_arg{
-        {"cpp", "g++ ? -o ? -std=c++17 "},
-        {"rust", "rustc ? -o ? "},
+        {"cpp", "/usr/bin/clang++ ? -o ? -std=c++17 "},
+        {"rust", "/usr/bin/rustc ? -o ? "},
     };
     map<std::string, std::string> interpretor_arg{
         {"merdog", "/usr/bin/merdog"},
@@ -41,7 +41,9 @@ namespace htto_judger
             {
                 return ret;
             }
+            
             string ins = replace_string(compiler_arg[compiler], {judge_info.source_path, ret});
+            std::cout << ins << endl;
             system(ins.c_str());
             return ret;
         }
