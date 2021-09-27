@@ -9,7 +9,6 @@
 #include <sys/wait.h>
 #include <getopt.h>
 #include <sys/resource.h>
-
 #include "judge_info.hpp"
 using namespace std;
 

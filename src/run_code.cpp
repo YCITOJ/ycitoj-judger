@@ -4,7 +4,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/resource.h>
+#include <fstream>
 #include "judge_info.hpp"
+#include "utils.hpp"
+
 using namespace std;
 namespace htto_judger
 {
@@ -22,13 +25,6 @@ namespace htto_judger
         return ret;
     }
 
-    map<std::string, std::string> compiler_arg{
-        {"cpp", "/usr/bin/g++ -O2 -fmax-errors=1 -std=c++17 -lm ? -o ?"},
-    };
-    map<std::string, std::string> interpretor_arg{
-        {"merdog", "/usr/bin/merdog"},
-        {"python", "/usr/bin/python3"},
-    };
     string compile(const string &compiler, const JudgeInfo &judge_info)
     {
         if (compiler == "cpp")
@@ -40,7 +36,7 @@ namespace htto_judger
                 return ret;
             }
 
-            string ins = replace_string(compiler_arg[compiler], {judge_info.source_path, ret});
+            string ins = replace_string(utils::config()["compilers"][compiler].get_str(), {judge_info.source_path, ret});
             std::cout << ins << endl;
             system(ins.c_str());
             return ret;
@@ -88,15 +84,15 @@ namespace htto_judger
     {
         redirect(info);
         set_limit(info);
-        if (compiler_arg.count(info.lang))
+        if (utils::config()["compilers"].get_map().count(info.lang))
         {
             string exe_path = info.gen_path + info.submission_id;
             execve(exe_path.c_str(), NULL, NULL);
             cerr << "compiler error\n";
         }
-        else if (interpretor_arg.count(info.lang))
+        else if (utils::config()["interpreters"].get_map().count(info.lang))
         {
-            string interpretor = interpretor_arg[info.lang];
+            string interpretor = utils::config()["interpreters"][info.lang].get_str();
             char *argv[] = {
                 (char *)"interpreter",
                 (char *)info.source_path.c_str(),
