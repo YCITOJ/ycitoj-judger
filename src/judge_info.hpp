@@ -27,6 +27,8 @@ namespace htto_judger
         std::string submission_id;
         std::string gen_path;
         void debug();
+
+        std::string compile_info;
     };
     struct JudgeResult
     {

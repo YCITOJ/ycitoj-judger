@@ -7,14 +7,15 @@
 #include <pthread.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include <getopt.h>
+#include <cstring>
+
 #include <sys/resource.h>
 #include "judge_info.hpp"
 using namespace std;
 
 namespace htto_judger
 {
-    string compile(const string &compiler, const JudgeInfo &judge_info);
+    string compile(const string &compiler, JudgeInfo &judge_info);
     void children_run(const JudgeInfo &info);
     ResultTag get_state(int stat, const rusage &usage, const htto_judger::JudgeInfo &info)
     {
@@ -69,6 +70,7 @@ struct JudgerData
 {
     int usage_time;
     int usage_mem;
+    char info[128 - 2 * sizeof(int)];
 };
 
 void write_judger_data_to_pipe(const std::string &pipe_name, JudgerData judger_data)
@@ -138,6 +140,8 @@ int main(int argc, char **argv)
 #else
         JudgerData judger_res = {usage_time, (int)cost.ru_maxrss};
 #endif
+        strcpy(judger_res.info,info.compile_info.c_str());
+
         write_judger_data_to_pipe("/tmp/pipe" + info.submission_id, judger_res);
 
         int type = htto_judger::get_state(stat, cost, info);

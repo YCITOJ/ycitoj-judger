@@ -7,7 +7,7 @@ int main()
     vector<int> vec;
     for(int i=1;i<=10000000;i++)
     {
-        vec.push_back(i);
+        vec.push_back(i)
     }
     cin >> a >> b;
     cout << a + b << endl;

@@ -7,6 +7,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <fcntl.h>
+#include <cstring>
 #include "judge_info.hpp"
 #include "utils.hpp"
 
@@ -27,7 +28,7 @@ namespace htto_judger
         return ret;
     }
 
-    string compile(const string &compiler, const JudgeInfo &judge_info)
+    string compile(const string &compiler, JudgeInfo &judge_info)
     {
         if (compiler == "cpp")
         {
@@ -39,15 +40,19 @@ namespace htto_judger
             }
             string ins = replace_string(utils::config()["compilers"][compiler].get_str(), {judge_info.source_path, ret});
             std::cout << ins << endl;
-            // write compile info into file / pipe
-            string file_name = "/tmp/compile" + judge_info.submission_id;
-            int fd = open(file_name.c_str(), O_RDWR);
-            if (fd == -1)
+            // get compile error info
             {
-                std::cerr << "open pipe" + file_name << " failed";
-                return "";
+                char buf[1024];
+                FILE *pfd;
+                string cmd = ins + " 2>&1";
+                pfd = popen(cmd.c_str(), "r");
+                int cnt = fread(buf, sizeof(char), 1024, pfd);
+                if (cnt >= 100)
+                    cnt = 100;
+                buf[cnt] = 0;
+                judge_info.compile_info = buf;
+                pclose(pfd);
             }
-            dup2(fd, fileno(stderr));
             // compile submit code
             system(ins.c_str());
             return ret;
