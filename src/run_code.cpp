@@ -103,7 +103,7 @@ namespace htto_judger
         if (utils::config()["compilers"].get_map().count(info.lang))
         {
             string exe_path = info.gen_path + info.submission_id;
-            execve(exe_path.c_str(), NULL, NULL);
+            execve(exe_path.c_str(), (char **)NULL, NULL);
             cerr << "compiler error\n";
         }
         else if (utils::config()["interpreters"].get_map().count(info.lang))
