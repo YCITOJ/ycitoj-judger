@@ -82,11 +82,21 @@ namespace htto_judger
         rlimit lim;
         lim.rlim_cur = lim.rlim_max = info.memory_limit * 1024 * 2048;
         // limit memory
+
+#ifdef __APPLE__
+        if (setrlimit(RLIMIT_STACK, &lim) != 0)
+        {
+            // macOS 12 cannot use RLIMIT_AS or RLIMIT_DATA >_<.
+            cerr << "limit memory failed\n";
+            exit(-1);
+        }
+#else
         if (setrlimit(RLIMIT_AS, &lim) != 0)
         {
             cerr << "limit memory failed\n";
             exit(-1);
         }
+#endif
         // limit time
         lim.rlim_cur = lim.rlim_max = info.time_limit / 1000 + 1;
         if (setrlimit(RLIMIT_CPU, &lim) != 0)
