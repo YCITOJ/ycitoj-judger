@@ -39,7 +39,6 @@ namespace htto_judger
                 return ret;
             }
             string ins = replace_string(utils::config()["compilers"][compiler].get_str(), {judge_info.source_path, ret});
-            std::cout << ins << endl;
             // get compile error info
             {
                 char buf[1024];
