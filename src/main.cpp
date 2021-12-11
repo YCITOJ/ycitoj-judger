@@ -22,8 +22,7 @@ namespace htto_judger
         int usage_time = usage.ru_utime.tv_sec * 1000 + usage.ru_utime.tv_usec / 1000;
         if (usage_time > info.time_limit)
             return ResultTag::TLE;
-
-        if (info.memory_limit * 1024 * 1024 < usage.ru_maxrss)
+        if (info.memory_limit * 1024 < usage.ru_maxrss)
             return ResultTag::MLE;
 
         if (WIFEXITED(stat))
@@ -133,6 +132,7 @@ int main(int argc, char **argv)
         rusage cost;
         int stat;
         wait4(child_pid, &stat, WSTOPPED, &cost);
+
         pthread_cancel(moniter_thread);
         int usage_time = cost.ru_utime.tv_sec * 1000 + cost.ru_utime.tv_usec / 1000;
 #ifdef __APPLE__
@@ -140,11 +140,13 @@ int main(int argc, char **argv)
 #else
         JudgerData judger_res = {usage_time, (int)cost.ru_maxrss};
 #endif
-        strcpy(judger_res.info,info.compile_info.c_str());
+        strcpy(judger_res.info, info.compile_info.c_str());
+
+
+        int type = htto_judger::get_state(stat, cost, info);
 
         write_judger_data_to_pipe("/tmp/pipe" + info.submission_id, judger_res);
 
-        int type = htto_judger::get_state(stat, cost, info);
         exit(type);
     }
     return 0;

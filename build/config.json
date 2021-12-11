@@ -1,6 +1,6 @@
 {
     "compilers": {
-        "cpp": "/usr/bin/g++ -O2 -fmax-errors=1 -std=c++17 -lm ? -o ?"
+        "cpp": "/usr/bin/clang++ -O2 -fmax-errors=1 -std=c++17 -lm ? -o ?"
     },
     "interpreters": {
         "python": "/user/bin/python3",
